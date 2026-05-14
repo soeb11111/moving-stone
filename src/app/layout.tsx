@@ -19,10 +19,16 @@ export const metadata: Metadata = {
   },
 };
 
+import SmoothScroll from "@/components/utils/SmoothScroll";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
+      </body>
     </html>
   );
 }

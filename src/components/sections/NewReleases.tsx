@@ -7,7 +7,7 @@ export const NewReleases = () => {
       <div className="grid md:grid-cols-2 gap-8">
         
         <div className="cursor-pointer group">
-          <div style={{ height: '500px', background: 'linear-gradient(180deg, #d4c2a5, #8c7f6b)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card-tall" style={{ background: 'linear-gradient(180deg, #d4c2a5, #8c7f6b)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Mockup visual for "The Bezier 2024 Collection" */}
             <div style={{ padding: '2rem', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', color: '#fff', textAlign: 'center' }}>
               <h3 className="display-sm mb-2 font-bold uppercase tracking-tighter" style={{ lineHeight: 1 }}>THE BÉZIER<br/>2024<br/>COLLECTION</h3>
@@ -20,7 +20,7 @@ export const NewReleases = () => {
         </div>
 
         <div className="cursor-pointer group">
-          <div style={{ height: '500px', background: '#222', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card-tall" style={{ background: '#222', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Mockup visual for "Introducing Plasma Celestial" */}
             <div style={{ width: '150px', height: '150px', borderRadius: '50%', background: '#ff5500', boxShadow: 'inset -20px -20px 40px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '10px', textTransform: 'uppercase' }}>
               <img src="/images/logo.png" alt="Moving Stone" style={{ height: '50px', width: 'auto', filter: 'brightness(0) invert(1)' }} />

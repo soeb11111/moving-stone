@@ -15,7 +15,7 @@ export const LogoCloud = () => {
           Trusted by Innovative Teams Worldwide
         </p>
         <div className="overflow-hidden relative">
-          <div className="flex gap-12 items-center w-max" style={{ animation: 'marquee 30s linear infinite' }}>
+          <div className="marquee-container items-center">
             {/* Double the logos for seamless marquee effect */}
             {[...logos, ...logos, ...logos].map((logo, idx) => (
               <div key={idx} className="flex items-center justify-center grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-300">

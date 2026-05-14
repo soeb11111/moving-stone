@@ -46,14 +46,12 @@ export const CollectionSection = () => {
         </motion.div>
       </div>
       
-      <div className="relative z-10 flex justify-between items-end w-full">
-        <div>
-          <h2 className="text-sm uppercase tracking-widest mb-2 text-white">2024 Collection</h2>
-          <h2 className="text-sm uppercase tracking-widest text-white/50">2024 Collection</h2>
-        </div>
-        <div style={{ maxWidth: '300px', textAlign: 'right' }}>
-          <p className="text-sm mb-4 text-white">an entire collection of items that fit into your life.</p>
-          <button className="btn btn-light">Explore</button>
+      <div className="container h-full relative z-10 flex flex-col justify-end">
+        <div className="responsive-bottom-row" style={{ paddingBottom: '2rem' }}>
+          <div>
+            <h2 className="text-sm uppercase tracking-widest mb-2 text-white">2024 Collection</h2>
+            <h2 className="text-sm uppercase tracking-widest text-white/50">2024 Collection</h2>
+          </div>
         </div>
       </div>
     </section>
