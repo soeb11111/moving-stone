@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+// Deployment Trigger: 2026-05-14T22:04:00Z
+
 export const metadata: Metadata = {
   title: "Moving Stone — AI-Powered Digital Marketing Agency",
   description: "We combine artificial intelligence, data science, and performance marketing to scale your business faster. SEO, Paid Media, AI Automation & more.",
