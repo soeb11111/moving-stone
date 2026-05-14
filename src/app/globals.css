@@ -123,14 +123,15 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 /* Sections */
 .full-section { 
   min-height: 100vh;
-  min-height: -webkit-fill-available;
+  min-height: 100svh;
   position: relative; 
   display: flex; 
   flex-direction: column; 
   justify-content: flex-end; 
-  padding: 2rem var(--gutter); 
+  padding: clamp(2rem, 5vw, 4rem) var(--gutter); 
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  width: 100%;
 }
 
 /* Responsive Components */
