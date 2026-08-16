@@ -20,7 +20,7 @@ function sign(payload: string, secret: string): string {
 /** Token format: "<issuedAtMs>.<hmac>" */
 export function signSession(secret: string, issuedAt: number = Date.now()): string {
   const ts = String(issuedAt);
-  return `${ts}.${sign(ts, secret)}`;
+  return `${ts}.${sign(`session:${ts}`, secret)}`;
 }
 
 export function verifySession(
@@ -35,7 +35,7 @@ export function verifySession(
   const [ts, mac] = parts;
   if (!/^\d+$/.test(ts)) return false;
 
-  const expected = sign(ts, secret);
+  const expected = sign(`session:${ts}`, secret);
   const a = Buffer.from(mac, 'utf8');
   const b = Buffer.from(expected, 'utf8');
   if (a.length !== b.length) return false;

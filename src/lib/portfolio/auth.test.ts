@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHmac } from 'node:crypto';
 import { checkPassword, signSession, verifySession, SESSION_MAX_AGE } from './auth.ts';
 
 test('accepts the correct password', () => {
@@ -42,6 +43,32 @@ test('a tampered session fails', () => {
   const token = signSession('secret', now);
   const [ts] = token.split('.');
   assert.equal(verifySession(`${ts}.deadbeef`, 'secret', now), false);
+});
+
+test('a session token with tampered same-length MAC fails', () => {
+  const now = Date.now();
+  const token = signSession('secret', now);
+  const [ts, mac] = token.split('.');
+  // Flip first character of MAC to a different hex digit
+  const tamperedMac = (mac[0] === 'a' ? 'b' : 'a') + mac.slice(1);
+  assert.equal(verifySession(`${ts}.${tamperedMac}`, 'secret', now), false);
+});
+
+test('domain separation: raw HMAC without prefix is not accepted', () => {
+  const now = Date.now();
+  const ts = String(now);
+  // Create a raw HMAC over bare timestamp (without domain prefix)
+  const rawMac = createHmac('sha256', 'secret').update(ts).digest('hex');
+  // Assemble as token format but with unverified MAC
+  const forgedToken = `${ts}.${rawMac}`;
+  assert.equal(verifySession(forgedToken, 'secret', now), false);
+});
+
+test('a future-dated token is rejected', () => {
+  const now = Date.now();
+  const futureTs = now + 60_000; // 60 seconds in the future
+  const token = signSession('secret', futureTs);
+  assert.equal(verifySession(token, 'secret', now), false);
 });
 
 test('malformed tokens fail without throwing', () => {
