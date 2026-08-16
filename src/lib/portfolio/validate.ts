@@ -34,7 +34,7 @@ export function parsePortfolio(input: unknown): Result {
         return { ok: false, error: `${at}: "${field}" must be text.` };
       }
     }
-    if (!str(o.format) || !(o.format in FORMATS)) {
+    if (!str(o.format) || !Object.prototype.hasOwnProperty.call(FORMATS, o.format)) {
       return { ok: false, error: `${at}: "format" is not a known format.` };
     }
     if (!str(o.category) || !CATEGORIES.includes(o.category as Category)) {

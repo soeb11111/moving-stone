@@ -55,3 +55,15 @@ test('strips unexpected properties', () => {
   assert.equal(result.ok, true);
   if (result.ok) assert.equal('sneaky' in result.items[0], false);
 });
+
+test('rejects format "toString" (prototype-chain bug)', () => {
+  const result = parsePortfolio({ items: [{ ...valid, format: 'toString' }] });
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /format/i);
+});
+
+test('rejects format "constructor" (prototype-chain bug)', () => {
+  const result = parsePortfolio({ items: [{ ...valid, format: 'constructor' }] });
+  assert.equal(result.ok, false);
+  if (!result.ok) assert.match(result.error, /format/i);
+});
