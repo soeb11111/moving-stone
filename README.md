@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Portfolio CMS
+
+The editor is at `/admin`; the public grid is at `/work`.
+
+### Setup
+
+1. **Vercel → Storage → Create a Blob store** and connect it to this project.
+   This sets `BLOB_READ_WRITE_TOKEN` for you.
+2. Copy the store's public address into `BLOB_PUBLIC_BASE_URL`
+   (Settings → Environment Variables). It looks like
+   `https://xxxxxxxx.public.blob.vercel-storage.com`.
+3. Add `ADMIN_PASSWORD` — make it long.
+4. Redeploy.
+
+Locally, copy `.env.example` to `.env.local` and fill in the same values.
+
+Without a Blob store the public page still works from `data/portfolio.json`,
+but uploading and publishing are disabled.
+

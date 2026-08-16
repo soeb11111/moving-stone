@@ -14,7 +14,7 @@ export const Header = () => {
       
       {/* Desktop Nav */}
       <nav className="nav-links desktop-nav">
-        <Link href="#">Store</Link>
+        <Link href="/work">Work</Link>
         <Link href="#">Studio</Link>
         <Link href="#">Journal</Link>
         <Link href="#">Account</Link>
@@ -32,7 +32,7 @@ export const Header = () => {
           fontWeight: 400,
           color: '#fff'
         }}>
-          <Link href="#" onClick={() => setMenuOpen(false)}>Store</Link>
+          <Link href="/work" onClick={() => setMenuOpen(false)}>Work</Link>
           <Link href="#" onClick={() => setMenuOpen(false)}>Studio</Link>
           <Link href="#" onClick={() => setMenuOpen(false)}>Journal</Link>
           <Link href="#" onClick={() => setMenuOpen(false)}>Account</Link>
