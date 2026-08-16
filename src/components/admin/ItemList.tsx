@@ -21,7 +21,16 @@ export function ItemList({ items, selectedId, onSelect, onMove, onDelete, onAdd 
         <div
           key={item.id}
           className={`ad-row-item${item.id === selectedId ? ' is-active' : ''}`}
+          role="button"
+          tabIndex={0}
+          aria-label={`Edit ${item.title || 'Untitled project'}`}
           onClick={() => onSelect(item.id)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === ' ') e.preventDefault();
+              onSelect(item.id);
+            }
+          }}
         >
           <span className="ad-row-title">{item.title || 'Untitled project'}</span>
           <span className="ad-row-actions">

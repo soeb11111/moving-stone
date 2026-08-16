@@ -16,16 +16,18 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(initialItems[0]?.id ?? null);
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
   const [loaded, setLoaded] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<PortfolioItem[] | null>(null);
+  const [otherTabChanged, setOtherTabChanged] = useState(false);
+  const justPublished = React.useRef(false);
 
-  // Restore any unpublished draft from this browser.
+  // Detect any unpublished draft from this browser, but don't apply it yet.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) {
         const draft = JSON.parse(raw);
         if (Array.isArray(draft?.items)) {
-          setItems(draft.items);
-          setSelectedId(draft.items[0]?.id ?? null);
+          setPendingDraft(draft.items);
         }
       }
     } catch {
@@ -34,14 +36,48 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
     setLoaded(true);
   }, []);
 
+  // Notice (but don't auto-apply) changes written by another tab.
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key === DRAFT_KEY) {
+        setOtherTabChanged(true);
+      }
+    }
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
   // Autosave, debounced.
   useEffect(() => {
     if (!loaded) return;
     const t = setTimeout(() => {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ items }));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ items, savedAt: Date.now() }));
     }, 500);
     return () => clearTimeout(t);
   }, [items, loaded]);
+
+  // Clear a stale "published" message as soon as the owner makes a new edit.
+  useEffect(() => {
+    if (!loaded) return;
+    if (justPublished.current) {
+      justPublished.current = false;
+      return;
+    }
+    setStatus((prev) => (prev.kind === 'ok' ? { kind: 'idle' } : prev));
+  }, [items, loaded]);
+
+  function useDraft() {
+    if (pendingDraft) {
+      setItems(pendingDraft);
+      setSelectedId(pendingDraft[0]?.id ?? null);
+    }
+    setPendingDraft(null);
+  }
+
+  function discardDraft() {
+    setPendingDraft(null);
+    localStorage.removeItem(DRAFT_KEY);
+  }
 
   const selected = useMemo(
     () => items.find((i) => i.id === selectedId) ?? null,
@@ -72,11 +108,9 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
   }
 
   function remove(id: string) {
-    setItems((prev) => {
-      const next = prev.filter((i) => i.id !== id);
-      if (id === selectedId) setSelectedId(next[0]?.id ?? null);
-      return next;
-    });
+    const next = items.filter((i) => i.id !== id);
+    setItems(next);
+    if (id === selectedId) setSelectedId(next[0]?.id ?? null);
   }
 
   async function publish() {
@@ -89,6 +123,8 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
+        localStorage.removeItem(DRAFT_KEY);
+        justPublished.current = true;
         setStatus({ kind: 'ok', message: 'Published — your changes are live.' });
       } else {
         setStatus({ kind: 'error', message: data.error ?? 'Could not publish. Try again.' });
@@ -108,41 +144,68 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
     URL.revokeObjectURL(url);
   }
 
+  async function signOut() {
+    await fetch('/api/auth', { method: 'DELETE' });
+    location.reload();
+  }
+
+  const showBanner = pendingDraft !== null || otherTabChanged;
+
   return (
-    <div className="ad-shell">
-      <aside className="ad-side">
-        <ItemList
-          items={items} selectedId={selectedId} onSelect={setSelectedId}
-          onMove={move} onDelete={remove} onAdd={add}
-        />
-      </aside>
-
-      <main className="ad-main">
-        {selected ? (
-          <ItemForm item={selected} onChange={patch} />
-        ) : (
-          <div className="ad-blank">
-            <h2>Nothing here yet</h2>
-            <p className="ad-hint">Add your first project to get started.</p>
-            <button className="btn btn-light" onClick={add}>Add your first project</button>
-          </div>
-        )}
-      </main>
-
-      <aside className="ad-preview-pane">
-        <span className="ad-label">Preview</span>
-        {selected && <PortfolioCard item={selected} />}
-
-        <div className="ad-actions">
-          <button className="btn btn-light" onClick={publish} disabled={status.kind === 'saving'}>
-            {status.kind === 'saving' ? 'Publishing…' : 'Publish'}
-          </button>
-          {status.message && (
-            <p className={status.kind === 'ok' ? 'ad-ok' : 'ad-error'}>{status.message}</p>
+    <div>
+      {showBanner && (
+        <div className="ad-draft-banner">
+          {pendingDraft !== null && (
+            <>
+              <span>You have unsaved changes from an earlier visit.</span>
+              <span>
+                <button type="button" onClick={useDraft}>Use these changes</button>
+                <button type="button" onClick={discardDraft}>Discard them</button>
+              </span>
+            </>
           )}
-          <button className="ad-remove" onClick={download}>Download a backup copy</button>
+          {otherTabChanged && (
+            <span>This page was changed in another tab. Reload to see the latest.</span>
+          )}
         </div>
-      </aside>
+      )}
+      <div className="ad-shell">
+        <aside className="ad-side">
+          <ItemList
+            items={items} selectedId={selectedId} onSelect={setSelectedId}
+            onMove={move} onDelete={remove} onAdd={add}
+          />
+        </aside>
+
+        <main className="ad-main">
+          {selected ? (
+            <ItemForm item={selected} onChange={patch} />
+          ) : (
+            <div className="ad-blank">
+              <h2>Nothing here yet</h2>
+              <p className="ad-hint">Add your first project to get started.</p>
+              <button className="btn btn-light" onClick={add}>Add your first project</button>
+            </div>
+          )}
+        </main>
+
+        <aside className="ad-preview-pane">
+          <span className="ad-label">Preview</span>
+          {selected && <PortfolioCard item={selected} />}
+
+          <div className="ad-actions">
+            <button className="btn btn-light" onClick={publish} disabled={status.kind === 'saving'}>
+              {status.kind === 'saving' ? 'Publishing…' : 'Publish'}
+            </button>
+            {status.message && (
+              <p className={status.kind === 'ok' ? 'ad-ok' : 'ad-error'}>{status.message}</p>
+            )}
+            <button className="ad-remove" onClick={download}>Download a backup copy</button>
+            <button className="ad-remove" onClick={signOut}>Sign out</button>
+            <p className="ad-hint">Sign out if you are on a shared computer.</p>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

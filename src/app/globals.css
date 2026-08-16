@@ -362,6 +362,7 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 .ad-row-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ad-row-actions { display: flex; gap: 0.35rem; opacity: 0; transition: opacity 0.2s; }
 .ad-row-item:hover .ad-row-actions { opacity: 1; }
+.ad-row-item:focus-within .ad-row-actions { opacity: 1; }
 .ad-row-actions button { color: var(--text-muted); padding: 0 0.2rem; }
 .ad-row-actions button:hover { color: var(--text-primary); }
 .ad-row-actions button:disabled { opacity: 0.25; cursor: default; }
@@ -379,6 +380,18 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 
 .ad-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .ad-ok { font-size: 0.8rem; color: #6bcf7f; }
+
+.ad-draft-banner {
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: 3px;
+  padding: 0.7rem 0.9rem; margin-bottom: 1rem; font-size: 0.8rem;
+  color: var(--text-secondary); display: flex; align-items: center;
+  justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;
+}
+.ad-draft-banner button {
+  font-size: 0.8rem; color: var(--text-primary); text-decoration: underline;
+  margin-left: 0.75rem;
+}
+.ad-draft-banner button:hover { color: var(--text-secondary); }
 
 .ad-blank { padding: 4rem 0; text-align: center; }
 .ad-blank h2 { margin-bottom: 0.5rem; }

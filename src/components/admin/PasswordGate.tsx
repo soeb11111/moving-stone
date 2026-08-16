@@ -21,7 +21,13 @@ export function PasswordGate({ onUnlock }: { onUnlock: () => void }) {
         onUnlock();
       } else {
         const data = await res.json().catch(() => ({}));
-        setError(data.error ?? 'That password is not right.');
+        if (res.status === 401) {
+          setError('That password is not right.');
+        } else if (res.status === 503) {
+          setError(data.error ?? 'The studio is not set up yet. Ask your developer to finish setup.');
+        } else {
+          setError('Something went wrong. Please try again.');
+        }
       }
     } catch {
       setError('Could not reach the server. Check your connection.');
