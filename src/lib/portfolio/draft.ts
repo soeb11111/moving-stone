@@ -1,4 +1,5 @@
 import type { PortfolioItem } from './types.ts';
+import { CATEGORIES, FORMATS } from './defaults.ts';
 
 function isValidItem(entry: unknown): entry is PortfolioItem {
   if (typeof entry !== 'object' || entry === null) return false;
@@ -6,7 +7,11 @@ function isValidItem(entry: unknown): entry is PortfolioItem {
   return (
     typeof e.id === 'string' &&
     typeof e.title === 'string' &&
-    typeof e.format === 'string'
+    typeof e.format === 'string' &&
+    Object.prototype.hasOwnProperty.call(FORMATS, e.format) &&
+    typeof e.category === 'string' &&
+    (CATEGORIES as string[]).includes(e.category) &&
+    typeof e.gradient === 'string'
   );
 }
 

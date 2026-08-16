@@ -28,13 +28,54 @@ test('items array with a null entry returns null', () => {
 
 test('item with non-string id returns null', () => {
   assert.equal(
-    parseDraft(JSON.stringify({ items: [{ id: 1, title: 'a', format: 'reel' }] })),
+    parseDraft(
+      JSON.stringify({
+        items: [{ id: 1, title: 'a', format: 'reel', category: 'Commercial', gradient: 'linear-gradient(1,2)' }],
+      }),
+    ),
     null,
   );
 });
 
 test('valid single-item draft returns the items array', () => {
-  const result = parseDraft(JSON.stringify({ items: [{ id: 'a', title: 'a', format: 'reel' }] }));
+  const result = parseDraft(
+    JSON.stringify({
+      items: [{ id: 'a', title: 'a', format: 'reel', category: 'Commercial', gradient: 'linear-gradient(1,2)' }],
+    }),
+  );
   assert.ok(result);
   assert.equal(result?.length, 1);
+});
+
+test('item with unknown category returns null', () => {
+  assert.equal(
+    parseDraft(
+      JSON.stringify({
+        items: [{ id: 'a', title: 'a', format: 'reel', category: 'Nope', gradient: 'linear-gradient(1,2)' }],
+      }),
+    ),
+    null,
+  );
+});
+
+test('item with format "toString" returns null', () => {
+  assert.equal(
+    parseDraft(
+      JSON.stringify({
+        items: [{ id: 'a', title: 'a', format: 'toString', category: 'Commercial', gradient: 'linear-gradient(1,2)' }],
+      }),
+    ),
+    null,
+  );
+});
+
+test('item with non-string gradient returns null', () => {
+  assert.equal(
+    parseDraft(
+      JSON.stringify({
+        items: [{ id: 'a', title: 'a', format: 'reel', category: 'Commercial', gradient: 5 }],
+      }),
+    ),
+    null,
+  );
 });

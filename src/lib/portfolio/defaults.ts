@@ -25,6 +25,12 @@ export const CATEGORIES: Category[] = [
   'Personal',
 ];
 
+export function aspectRatioFor(format: string): string {
+  return Object.prototype.hasOwnProperty.call(FORMATS, format)
+    ? FORMATS[format as Format].aspectRatio
+    : FORMATS.reel.aspectRatio;
+}
+
 export function emptyItem(): PortfolioItem {
   return {
     id: crypto.randomUUID(),

@@ -19,6 +19,7 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
   const [loaded, setLoaded] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<PortfolioItem[] | null>(null);
   const [otherTabChanged, setOtherTabChanged] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   // Detect any unpublished draft from this browser, but don't apply it yet.
   useEffect(() => {
@@ -107,6 +108,7 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
 
   async function publish() {
     setStatus({ kind: 'saving' });
+    setSessionExpired(false);
     try {
       const res = await fetch('/api/portfolio', {
         method: 'POST',
@@ -117,6 +119,9 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
       if (res.ok) {
         localStorage.removeItem(DRAFT_KEY);
         setStatus({ kind: 'ok', message: 'Published — your changes are live.' });
+      } else if (res.status === 401) {
+        setSessionExpired(true);
+        setStatus({ kind: 'error', message: 'Your session has ended. Sign in again to publish.' });
       } else {
         setStatus({ kind: 'error', message: data.error ?? 'Could not publish. Try again.' });
       }
@@ -194,7 +199,14 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
               {status.kind === 'saving' ? 'Publishing…' : 'Publish'}
             </button>
             {status.message && (
-              <p className={status.kind === 'ok' ? 'ad-ok' : 'ad-error'}>{status.message}</p>
+              <p className={status.kind === 'ok' ? 'ad-ok' : 'ad-error'}>
+                {status.message}
+                {sessionExpired && (
+                  <button type="button" className="ad-remove" onClick={() => location.reload()}>
+                    Sign in again
+                  </button>
+                )}
+              </p>
             )}
             <button className="ad-remove" onClick={download}>Download a backup copy</button>
             <button className="ad-remove" onClick={signOut}>Sign out</button>

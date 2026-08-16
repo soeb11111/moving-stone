@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import type { PortfolioItem } from '@/lib/portfolio/types';
-import { FORMATS } from '@/lib/portfolio/defaults';
+import { aspectRatioFor } from '@/lib/portfolio/defaults';
 
 export function PortfolioCard({ item }: { item: PortfolioItem }) {
   const [playing, setPlaying] = useState(false);
@@ -11,7 +11,7 @@ export function PortfolioCard({ item }: { item: PortfolioItem }) {
   const mountedRef = useRef(true);
   const isEmbed = /youtube\.com|youtu\.be|vimeo\.com/.test(item.videoUrl);
   const canPlayInline = Boolean(item.videoUrl) && !isEmbed;
-  const aspectRatio = FORMATS[item.format]?.aspectRatio ?? FORMATS.reel.aspectRatio;
+  const aspectRatio = aspectRatioFor(item.format);
 
   useEffect(() => {
     mountedRef.current = true;

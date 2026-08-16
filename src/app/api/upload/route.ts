@@ -38,9 +38,6 @@ export async function POST(request: Request) {
               addRandomSuffix: true,
             };
       },
-      onUploadCompleted: async () => {
-        // Nothing to do — the editor records the returned address itself.
-      },
     });
     return Response.json(result);
   } catch {

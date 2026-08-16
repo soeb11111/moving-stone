@@ -5,6 +5,19 @@ type Result =
   | { ok: true; items: PortfolioItem[] }
   | { ok: false; error: string };
 
+const FIELD_LABELS: Record<string, string> = {
+  id: 'identifier',
+  title: 'title',
+  client: 'client',
+  duration: 'length',
+  imageUrl: 'cover image',
+  videoUrl: 'video',
+  gradient: 'background colour',
+  year: 'year',
+  format: 'shape',
+  category: 'category',
+};
+
 function str(v: unknown): v is string {
   return typeof v === 'string';
 }
@@ -31,14 +44,14 @@ export function parsePortfolio(input: unknown): Result {
 
     for (const field of ['id', 'title', 'client', 'duration', 'imageUrl', 'videoUrl', 'gradient', 'year']) {
       if (!str(o[field])) {
-        return { ok: false, error: `${at}: "${field}" must be text.` };
+        return { ok: false, error: `${at}: "${FIELD_LABELS[field]}" must be text.` };
       }
     }
     if (!str(o.format) || !Object.prototype.hasOwnProperty.call(FORMATS, o.format)) {
-      return { ok: false, error: `${at}: "format" is not a known format.` };
+      return { ok: false, error: `${at}: "${FIELD_LABELS.format}" is not a known ${FIELD_LABELS.format}.` };
     }
     if (!str(o.category) || !CATEGORIES.includes(o.category as Category)) {
-      return { ok: false, error: `${at}: "category" is not a known category.` };
+      return { ok: false, error: `${at}: "${FIELD_LABELS.category}" is not a known ${FIELD_LABELS.category}.` };
     }
 
     items.push({

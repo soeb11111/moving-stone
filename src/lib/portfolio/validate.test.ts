@@ -35,7 +35,7 @@ test('rejects a missing items array', () => {
 test('rejects an unknown format and names the field', () => {
   const result = parsePortfolio({ items: [{ ...valid, format: 'banana' }] });
   assert.equal(result.ok, false);
-  if (!result.ok) assert.match(result.error, /format/i);
+  if (!result.ok) assert.match(result.error, /shape/i);
 });
 
 test('rejects an unknown category and names the field', () => {
@@ -59,11 +59,11 @@ test('strips unexpected properties', () => {
 test('rejects format "toString" (prototype-chain bug)', () => {
   const result = parsePortfolio({ items: [{ ...valid, format: 'toString' }] });
   assert.equal(result.ok, false);
-  if (!result.ok) assert.match(result.error, /format/i);
+  if (!result.ok) assert.match(result.error, /shape/i);
 });
 
 test('rejects format "constructor" (prototype-chain bug)', () => {
   const result = parsePortfolio({ items: [{ ...valid, format: 'constructor' }] });
   assert.equal(result.ok, false);
-  if (!result.ok) assert.match(result.error, /format/i);
+  if (!result.ok) assert.match(result.error, /shape/i);
 });
