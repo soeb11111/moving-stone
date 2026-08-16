@@ -309,6 +309,7 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
   color: var(--text-secondary); font-size: 0.85rem;
 }
 .ad-drop:hover, .ad-drop.is-dragging { border-color: var(--text-primary); background: var(--bg-panel); }
+.ad-drop:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
 .ad-bar { width: 100%; height: 3px; background: var(--border); margin-top: 0.6rem; }
 .ad-bar > div { height: 100%; background: var(--text-primary); transition: width 0.2s; }
 

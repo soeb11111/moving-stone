@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { upload } from '@vercel/blob/client';
+import { uploadErrorMessage } from '@/lib/portfolio/upload-errors';
 
 const LIMITS = {
   image: { bytes: 10 * 1024 * 1024, label: '10MB', accept: 'image/*' },
@@ -20,11 +21,18 @@ export function UploadField({ label, hint, kind, value, onChange }: Props) {
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [dragging, setDragging] = useState(false);
+  const dragDepth = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const limit = LIMITS[kind];
 
   async function handleFile(file: File) {
     setError('');
+
+    const expectedPrefix = kind === 'image' ? 'image/' : 'video/';
+    if (!file.type.startsWith(expectedPrefix)) {
+      setError('That kind of file is not supported. Try a photo or a video.');
+      return;
+    }
 
     if (file.size > limit.bytes) {
       setError(`That file is too big. Try one under ${limit.label}.`);
@@ -40,10 +48,14 @@ export function UploadField({ label, hint, kind, value, onChange }: Props) {
       });
       onChange(result.url);
       setProgress(null);
-    } catch {
+    } catch (err) {
       setProgress(null);
-      setError('That upload did not go through. Check your connection and try again.');
+      setError(uploadErrorMessage(err));
     }
+  }
+
+  function openPicker() {
+    inputRef.current?.click();
   }
 
   return (
@@ -63,11 +75,29 @@ export function UploadField({ label, hint, kind, value, onChange }: Props) {
       ) : (
         <div
           className={`ad-drop${dragging ? ' is-dragging' : ''}`}
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-          onDragLeave={() => setDragging(false)}
+          role="button"
+          tabIndex={0}
+          aria-label={`Choose a file for ${label}`}
+          onClick={openPicker}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === ' ') e.preventDefault();
+              openPicker();
+            }
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            dragDepth.current += 1;
+            setDragging(dragDepth.current > 0);
+          }}
+          onDragOver={(e) => { e.preventDefault(); }}
+          onDragLeave={() => {
+            dragDepth.current = Math.max(0, dragDepth.current - 1);
+            setDragging(dragDepth.current > 0);
+          }}
           onDrop={(e) => {
             e.preventDefault();
+            dragDepth.current = 0;
             setDragging(false);
             const file = e.dataTransfer.files?.[0];
             if (file) handleFile(file);
