@@ -285,3 +285,51 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 .pf-title { font-size: 1.1rem; color: #fff; margin-top: 0.25rem; }
 .pf-client { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
 .pf-empty { color: var(--text-muted); padding: 3rem 0; }
+
+/* ---------- Admin ---------- */
+.ad-field { margin-bottom: 1.75rem; }
+.ad-label {
+  display: block; font-size: 0.75rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-primary); margin-bottom: 0.25rem;
+}
+.ad-hint { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+.ad-error { font-size: 0.8rem; color: #ff6b6b; margin-top: 0.5rem; }
+
+.ad-input, .ad-select {
+  width: 100%; padding: 0.7rem 0.85rem; background: var(--bg);
+  border: 1px solid var(--border); color: var(--text-primary);
+  font-family: inherit; font-size: 0.95rem; border-radius: 3px;
+}
+.ad-input:focus, .ad-select:focus { outline: none; border-color: var(--text-muted); }
+
+.ad-drop {
+  border: 1px dashed var(--border); border-radius: 4px; padding: 2rem 1rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  text-align: center; cursor: pointer; transition: all 0.2s;
+  color: var(--text-secondary); font-size: 0.85rem;
+}
+.ad-drop:hover, .ad-drop.is-dragging { border-color: var(--text-primary); background: var(--bg-panel); }
+.ad-bar { width: 100%; height: 3px; background: var(--border); margin-top: 0.6rem; }
+.ad-bar > div { height: 100%; background: var(--text-primary); transition: width 0.2s; }
+
+.ad-preview { position: relative; display: inline-block; }
+.ad-thumb { max-height: 140px; border-radius: 3px; border: 1px solid var(--border); }
+.ad-remove {
+  display: block; margin-top: 0.5rem; font-size: 0.75rem;
+  color: var(--text-muted); text-decoration: underline;
+}
+.ad-remove:hover { color: var(--text-primary); }
+
+.ad-formats { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.ad-format {
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); width: 64px;
+}
+.ad-format-shape {
+  width: 100%; max-height: 56px; border: 1px solid var(--border);
+  border-radius: 2px; transition: all 0.2s;
+}
+.ad-format:hover .ad-format-shape { border-color: var(--text-secondary); }
+.ad-format.is-active { color: var(--text-primary); }
+.ad-format.is-active .ad-format-shape { border-color: var(--text-primary); background: rgba(255,255,255,0.08); }
