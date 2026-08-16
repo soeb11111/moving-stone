@@ -3,6 +3,8 @@ import { Footer } from '@/components/layout/Footer';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { getPortfolio } from '@/lib/portfolio/store';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = { title: 'Work — Moving Stone' };
 
 export default async function WorkPage() {

@@ -5,6 +5,11 @@ import bundled from '../../../data/portfolio.json' with { type: 'json' };
 
 export const BLOB_DATA_KEY = 'portfolio/data.json';
 
+export function buildDataUrl(base: string): string {
+  const normalized = base.endsWith('/') ? base.slice(0, -1) : base;
+  return `${normalized}/${BLOB_DATA_KEY}`;
+}
+
 function fallbackItems(): PortfolioItem[] {
   const parsed = parsePortfolio(bundled);
   return parsed.ok ? parsed.items : [];
@@ -30,7 +35,7 @@ export async function readPortfolioFrom(
 async function fetchFromBlob(): Promise<unknown> {
   const base = process.env.BLOB_PUBLIC_BASE_URL;
   if (!base) return null;
-  const res = await fetch(`${base}/${BLOB_DATA_KEY}`, {
+  const res = await fetch(buildDataUrl(base), {
     next: { tags: ['portfolio'] },
   });
   if (!res.ok) return null;

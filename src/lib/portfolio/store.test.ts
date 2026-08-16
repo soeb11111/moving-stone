@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readPortfolioFrom } from './store.ts';
+import { readPortfolioFrom, buildDataUrl } from './store.ts';
 
 const remote = {
   items: [{
@@ -29,4 +29,12 @@ test('falls back when the fetch returns nothing', async () => {
 test('falls back when remote content is malformed', async () => {
   const items = await readPortfolioFrom(async () => ({ items: [{ bad: true }] }));
   assert.equal(items[0].title, 'Northern Lines');
+});
+
+test('normalizes trailing slash on base URL', () => {
+  const withoutSlash = buildDataUrl('https://x.example.com');
+  const withSlash = buildDataUrl('https://x.example.com/');
+  assert.equal(withoutSlash, 'https://x.example.com/portfolio/data.json');
+  assert.equal(withSlash, 'https://x.example.com/portfolio/data.json');
+  assert.equal(withoutSlash, withSlash);
 });
