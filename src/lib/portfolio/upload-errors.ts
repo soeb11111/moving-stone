@@ -4,6 +4,9 @@ export function uploadErrorMessage(error: unknown): string {
   if (message.includes('not signed in') || message.includes('401') || message.includes('unauthorized')) {
     return 'Your session has ended. Please sign in again.';
   }
+  if (message.includes('retrieve the client token') || message.includes('retrieve the presigned url')) {
+    return 'Could not start the upload. Your session may have ended — try signing in again.';
+  }
   if (
     message.includes('413') ||
     message.includes('too large') ||

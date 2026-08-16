@@ -5,6 +5,12 @@ import {
   checkPassword,
   signSession,
 } from '@/lib/portfolio/auth';
+import { requireSession } from '@/lib/portfolio/session';
+
+export async function GET() {
+  const signedIn = await requireSession();
+  return Response.json({ signedIn }, { status: 200 });
+}
 
 export async function POST(request: Request) {
   const secret = process.env.ADMIN_PASSWORD;

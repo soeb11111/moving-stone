@@ -43,3 +43,24 @@ test('falls back to the generic message for a non-Error value', () => {
     'That upload did not go through. Check your connection and try again.',
   );
 });
+
+test('reports a possibly ended session for the client-token error (double space)', () => {
+  assert.equal(
+    uploadErrorMessage(new Error('Failed to  retrieve the client token')),
+    'Could not start the upload. Your session may have ended — try signing in again.',
+  );
+});
+
+test('reports a possibly ended session for the client-token error (single space)', () => {
+  assert.equal(
+    uploadErrorMessage(new Error('Failed to retrieve the client token')),
+    'Could not start the upload. Your session may have ended — try signing in again.',
+  );
+});
+
+test('the explicit auth branch still wins over the client-token branch', () => {
+  assert.equal(
+    uploadErrorMessage(new Error('Not signed in.')),
+    'Your session has ended. Please sign in again.',
+  );
+});

@@ -29,7 +29,7 @@ export function UploadField({ label, hint, kind, value, onChange }: Props) {
     setError('');
 
     const expectedPrefix = kind === 'image' ? 'image/' : 'video/';
-    if (!file.type.startsWith(expectedPrefix)) {
+    if (file.type && !file.type.startsWith(expectedPrefix)) {
       setError('That kind of file is not supported. Try a photo or a video.');
       return;
     }
@@ -50,6 +50,16 @@ export function UploadField({ label, hint, kind, value, onChange }: Props) {
       setProgress(null);
     } catch (err) {
       setProgress(null);
+      try {
+        const res = await fetch('/api/auth');
+        const data = await res.json();
+        if (data?.signedIn === false) {
+          setError('Your session has ended. Please sign in again.');
+          return;
+        }
+      } catch {
+        // fall through to mapped error message
+      }
       setError(uploadErrorMessage(err));
     }
   }
