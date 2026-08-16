@@ -64,11 +64,13 @@ data/portfolio.json              committed baseline content
 `/work` is a server component calling `getPortfolio()`, which attempts a Vercel
 Blob read and falls back to the committed `data/portfolio.json`. Published
 content lives at a single fixed Blob key, `portfolio/data.json`, overwritten on
-each publish with `addRandomSuffix: false` so reader and writer always agree on
-the location. Uploaded media lives under `portfolio/media/`. The Blob read
-is wrapped in a `use cache` helper with `cacheLife('minutes')` — per the Next 16
-route-handler docs, `use cache` cannot appear directly in a handler body and
-must be extracted to a helper function.
+each publish with `addRandomSuffix: false` and `allowOverwrite: true` so reader
+and writer always agree on the location. Both of those options default to
+`false` in `@vercel/blob` 2.8.0, so omitting `allowOverwrite` would make the
+second publish fail. Uploaded media lives under `portfolio/media/`. The Blob read
+is a tagged fetch (`next: { tags: ['portfolio'] }`) and publish calls
+`revalidateTag('portfolio')`. This is simpler than `use cache`, which per the
+Next 16 route-handler docs cannot appear directly in a handler body.
 
 ### Write path
 
