@@ -38,3 +38,8 @@ test('normalizes trailing slash on base URL', () => {
   assert.equal(withSlash, 'https://x.example.com/portfolio/data.json');
   assert.equal(withoutSlash, withSlash);
 });
+
+test('normalizes multiple trailing slashes on base URL', () => {
+  const result = buildDataUrl('https://x.example.com//');
+  assert.equal(result, 'https://x.example.com/portfolio/data.json');
+});

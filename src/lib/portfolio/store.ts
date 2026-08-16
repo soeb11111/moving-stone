@@ -6,7 +6,7 @@ import bundled from '../../../data/portfolio.json' with { type: 'json' };
 export const BLOB_DATA_KEY = 'portfolio/data.json';
 
 export function buildDataUrl(base: string): string {
-  const normalized = base.endsWith('/') ? base.slice(0, -1) : base;
+  const normalized = base.replace(/\/+$/, '');
   return `${normalized}/${BLOB_DATA_KEY}`;
 }
 
