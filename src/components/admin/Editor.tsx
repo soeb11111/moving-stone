@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { PortfolioItem } from '@/lib/portfolio/types';
 import { emptyItem } from '@/lib/portfolio/defaults';
+import { parseDraft } from '@/lib/portfolio/draft';
 import { PortfolioCard } from '@/components/portfolio/PortfolioCard';
 import { ItemForm } from './ItemForm';
 import { ItemList } from './ItemList';
@@ -18,20 +19,14 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
   const [loaded, setLoaded] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<PortfolioItem[] | null>(null);
   const [otherTabChanged, setOtherTabChanged] = useState(false);
-  const justPublished = React.useRef(false);
 
   // Detect any unpublished draft from this browser, but don't apply it yet.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (raw) {
-        const draft = JSON.parse(raw);
-        if (Array.isArray(draft?.items)) {
-          setPendingDraft(draft.items);
-        }
-      }
-    } catch {
-      // A corrupt draft is not worth surfacing — fall back to published content.
+    const items = parseDraft(localStorage.getItem(DRAFT_KEY));
+    if (items) {
+      setPendingDraft(items);
+    } else {
+      localStorage.removeItem(DRAFT_KEY);
     }
     setLoaded(true);
   }, []);
@@ -47,22 +42,19 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  // Autosave, debounced.
+  // Autosave, debounced. Never write while an undecided draft is pending —
+  // doing so would overwrite the very draft the owner is being asked about.
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded || pendingDraft !== null) return;
     const t = setTimeout(() => {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ items, savedAt: Date.now() }));
     }, 500);
     return () => clearTimeout(t);
-  }, [items, loaded]);
+  }, [items, loaded, pendingDraft]);
 
   // Clear a stale "published" message as soon as the owner makes a new edit.
   useEffect(() => {
     if (!loaded) return;
-    if (justPublished.current) {
-      justPublished.current = false;
-      return;
-    }
     setStatus((prev) => (prev.kind === 'ok' ? { kind: 'idle' } : prev));
   }, [items, loaded]);
 
@@ -124,7 +116,6 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         localStorage.removeItem(DRAFT_KEY);
-        justPublished.current = true;
         setStatus({ kind: 'ok', message: 'Published — your changes are live.' });
       } else {
         setStatus({ kind: 'error', message: data.error ?? 'Could not publish. Try again.' });
@@ -145,7 +136,12 @@ export function Editor({ initialItems }: { initialItems: PortfolioItem[] }) {
   }
 
   async function signOut() {
-    await fetch('/api/auth', { method: 'DELETE' });
+    localStorage.removeItem(DRAFT_KEY);
+    try {
+      await fetch('/api/auth', { method: 'DELETE' });
+    } catch {
+      // Even if the request fails, still sign the user out locally.
+    }
     location.reload();
   }
 
