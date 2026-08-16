@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# environment — contains ADMIN_PASSWORD
+.env
+.env.*
+!.env.example
+
+# vercel
+.vercel/
+
+# local tooling
+.playwright-mcp/
+
+# editor / OS
+.DS_Store
+Thumbs.db
+*.log
