@@ -334,3 +334,58 @@ h1, h2, h3, h4 { font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; }
 .ad-format:hover .ad-format-shape { border-color: var(--text-secondary); }
 .ad-format.is-active { color: var(--text-primary); }
 .ad-format.is-active .ad-format-shape { border-color: var(--text-primary); background: rgba(255,255,255,0.08); }
+
+/* ---------- Admin layout ---------- */
+.ad-shell {
+  display: grid; grid-template-columns: 260px 1fr 320px;
+  min-height: 100vh; background: var(--bg);
+}
+@media (max-width: 1100px) { .ad-shell { grid-template-columns: 1fr; } }
+
+.ad-side { border-right: 1px solid var(--border); padding: 1.5rem 1rem; }
+.ad-main { padding: 2rem; max-width: 640px; }
+.ad-preview-pane { border-left: 1px solid var(--border); padding: 1.5rem; }
+
+.ad-add {
+  width: 100%; padding: 0.7rem; border: 1px dashed var(--border);
+  color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;
+}
+.ad-add:hover { border-color: var(--text-primary); color: var(--text-primary); }
+
+.ad-row-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0.7rem; cursor: pointer; border-radius: 3px;
+  font-size: 0.9rem; color: var(--text-secondary);
+}
+.ad-row-item:hover { background: var(--bg-panel); }
+.ad-row-item.is-active { background: var(--bg-panel); color: var(--text-primary); }
+.ad-row-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ad-row-actions { display: flex; gap: 0.35rem; opacity: 0; transition: opacity 0.2s; }
+.ad-row-item:hover .ad-row-actions { opacity: 1; }
+.ad-row-actions button { color: var(--text-muted); padding: 0 0.2rem; }
+.ad-row-actions button:hover { color: var(--text-primary); }
+.ad-row-actions button:disabled { opacity: 0.25; cursor: default; }
+
+.ad-row { display: flex; gap: 1rem; }
+.ad-details { margin-bottom: 1.75rem; color: var(--text-secondary); font-size: 0.85rem; }
+.ad-details summary { cursor: pointer; }
+
+.ad-swatches { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ad-swatch {
+  width: 40px; height: 40px; border-radius: 3px;
+  border: 2px solid transparent; transition: border-color 0.2s;
+}
+.ad-swatch.is-active { border-color: var(--text-primary); }
+
+.ad-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.ad-ok { font-size: 0.8rem; color: #6bcf7f; }
+
+.ad-blank { padding: 4rem 0; text-align: center; }
+.ad-blank h2 { margin-bottom: 0.5rem; }
+
+.ad-gate {
+  min-height: 100vh; display: flex; align-items: center;
+  justify-content: center; background: var(--bg);
+}
+.ad-gate-box { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 0.85rem; }
+.ad-gate-title { font-size: 1.5rem; }
