@@ -7,12 +7,7 @@ function Footer() {
     <footer className="bg-black text-white border-t border-white/15">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-10 md:px-14 py-16 grid gap-10 md:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <svg width="22" height="22" viewBox="0 0 256 256" fill="#e8702a" aria-hidden="true">
-              <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
-            </svg>
-            <span className="text-white text-xl font-playfair italic">Moving Stone</span>
-          </div>
+          <img src="/logo.png" alt="Moving Stone" className="h-20 w-auto" />
           <p className="mt-4 text-sm text-white/50 font-light max-w-[26ch] leading-relaxed">
             A design studio for categories that stopped moving.
           </p>

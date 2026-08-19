@@ -1,22 +1,40 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { NAV_LINKS } from '../data/content';
 
-const Logo = () => (
-  <svg width="26" height="26" viewBox="0 0 256 256" fill="#ffffff" aria-hidden="true">
-    <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
-  </svg>
-);
+const FADE_DISTANCE = 240;
 
 function Nav() {
   const [open, setOpen] = useState(false);
+  const [logoOpacity, setLogoOpacity] = useState(1);
+  const [logoHovered, setLogoHovered] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const next = 1 - Math.min(window.scrollY / FADE_DISTANCE, 1) * 0.75;
+      setLogoOpacity(next);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between p-4 sm:p-5">
-      <Link to="/" className="flex items-center gap-2.5" aria-label="Moving Stone, home">
-        <Logo />
-        <span className="text-white text-2xl font-playfair italic">Moving Stone</span>
+      <Link
+        to="/"
+        className="flex items-center"
+        aria-label="Moving Stone, home"
+        onMouseEnter={() => setLogoHovered(true)}
+        onMouseLeave={() => setLogoHovered(false)}
+      >
+        <img
+          src="/logo.png"
+          alt="Moving Stone"
+          className="h-20 sm:h-24 w-auto transition-opacity duration-200 ease-out"
+          style={{ opacity: logoHovered ? 1 : logoOpacity }}
+        />
       </Link>
 
       <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 items-center gap-1">
